@@ -359,6 +359,7 @@ window
   rotate: false
   xy: 2, 204
   size: 54, 101
+  split: 10, 20, 10, 10 // remember you added this
   orig: 54, 101
   offset: 0, 0
   index: -1

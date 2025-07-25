@@ -3,8 +3,11 @@ package com.zuza.philgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -17,6 +20,9 @@ public class GameScreen implements Screen {
     private Sprite sprite2;
     private Stage stage;
     private Skin skin;
+    private TextButton menuButton;
+    private InventoryWindow inventoryWindow;
+    private SideMenu  sideMenu;
 
     public GameScreen(Core game) {
         this.grid = new Grid(20, 15);
@@ -46,22 +52,26 @@ public class GameScreen implements Screen {
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        TextButton menuButton = new TextButton("|||", skin);
+        menuButton = new TextButton("|||", skin);
         menuButton.setSize(30,20);
 
-        // keeps the button from sticking to the edge
-        float padding = 5;
-        menuButton.setPosition(
-          Gdx.graphics.getWidth() - menuButton.getWidth() - padding,
-          Gdx.graphics.getHeight() - menuButton.getHeight() - padding
-        );
+
+        // removes the padding under the button
 
         menuButton.getStyle().up = null;
         menuButton.getStyle().over = null;
         menuButton.getStyle().down = null;
 
-        SideMenu sideMenu = new SideMenu(skin);
+
+        inventoryWindow = new InventoryWindow("Inventory", skin);
+        sideMenu = new SideMenu(skin, inventoryWindow );
         stage.addActor(sideMenu);
+        stage.addActor(inventoryWindow);
+        inventoryWindow.toFront();
+        inventoryWindow.setTouchable(Touchable.enabled);
+        inventoryWindow.debug();
+
+        inventoryWindow.setVisible(false);
 
 
         menuButton.addListener(new ClickListener(){
@@ -72,14 +82,46 @@ public class GameScreen implements Screen {
 
         });
 
+        stage.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (inventoryWindow.isVisible()) {
+                    if (inventoryWindow.hit(x-inventoryWindow.getX(), y - inventoryWindow.getY(), true) == null){
+                        inventoryWindow.setVisible(false);
+                    }
+                }
+                return false;
+            }
+
+        });
+
         stage.addActor(menuButton);
+
+        // Help from : https://libgdx.com/wiki/graphics/2d/scene2d/table
+        // Note to self: This should be moved to its own class?
+        Table menuButtonTable = new Table();
+        menuButtonTable.setFillParent(true);
+        stage.addActor(menuButtonTable);
+
+        menuButtonTable.top().right().pad(10);
+        menuButtonTable.add(menuButton).width(menuButton.getWidth()).height(menuButton.getHeight());
+
+        Table sideMenuTable = new Table();
+        sideMenuTable.setFillParent(true);
+        stage.addActor(sideMenuTable);
+        sideMenuTable.top().right().pad(10);
+        sideMenuTable.add(sideMenu).width(sideMenu.getWidth()).height(sideMenu.getHeight());
 
     }
 
 
 
     @Override
-    public void resize(int width, int height) {}
+    public void resize(int width, int height) {
+
+        stage.getViewport().update(width, height, true);    //makes sure everything works after resize
+
+    }
     @Override
     public void pause() {}
     @Override
