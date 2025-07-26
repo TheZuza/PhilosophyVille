@@ -69,7 +69,7 @@ public class GameScreen implements Screen {
         stage.addActor(inventoryWindow);
         inventoryWindow.toFront();
         inventoryWindow.setTouchable(Touchable.enabled);
-        inventoryWindow.debug();
+        //inventoryWindow.debug();
 
         inventoryWindow.setVisible(false);
 
