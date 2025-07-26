@@ -35,6 +35,9 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0,0,0,1); // clears grid before drawing with solid colour
+
+        sprite.update(delta);
+
         game.batch.begin();
         grid.render(game.batch);
         sprite.render(game.batch);
