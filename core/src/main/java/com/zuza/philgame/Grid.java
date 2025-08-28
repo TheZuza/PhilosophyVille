@@ -33,4 +33,13 @@ public class Grid {
         }
     }
 
+    public void setTile( int x, int y, Tile tile) {
+        if (x < 0 || y < 0 || x >= width || y >= height) return;
+        tiles[x][y] = tile;
+    }
+    public Tile getTile(int x, int y) {
+        if (x < 0 || y < 0 || x >= width || y >= height) return null;
+        return tiles[x][y];
+    }
+
 }

@@ -2,6 +2,7 @@ package com.zuza.philgame;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -11,7 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class GameScreen implements Screen {
+
+
+public class TScreen implements Screen {
+
     private Core game;
     private Grid grid;
     private Sprite sprite;
@@ -21,42 +25,43 @@ public class GameScreen implements Screen {
     private TextButton menuButton;
     private InventoryWindow inventoryWindow;
     private SideMenu  sideMenu;
+    private NPC philosopherT;
 
+    public Dialogue dialogue;
+    public String philosopherTLesson = " In the philosophy of time travel, there’s a paradox called the bootstrap paradox (or causal loop). It’s when an object or piece of information is sent back in time and becomes the very cause of itself existing in the future.";
+    private boolean saidIt =  false;
 
-
-
-    private static final int PORTAL_X = 19;
-    private static final int PORTAL_Y = 7;
-    private boolean transitioning = false;
-
-
-
-    public GameScreen(Core game) {
+    public TScreen(Core game) {
         this.grid = new Grid(20, 15);
         this.game = game;
 
     }
 
-
-
-    @Override
     public void render(float delta) {
         ScreenUtils.clear(0,0,0,1); // clears grid before drawing with solid colour
 
         sprite.update(delta);
 
-
-        if(!transitioning && isSpriteOnPortal()) {
-            transitioning = true;
-            game.setScreen(new NScreen(game));
-        }
-
         game.batch.begin();
         grid.render(game.batch);
         sprite.render(game.batch);
 
+        philosopherT.render(game.batch, Grid.TILE_SIZE);
+
+        int playerTileX = (int) sprite.getX();
+        int playerTileY = (int) sprite.getY();
+
+        philosopherT.update(playerTileX, playerTileY);
 
 
+        if (philosopherT.justEntered() && philosopherT.cooldownReady()) {
+            dialogue.show(philosopherTLesson);
+            philosopherT.markSpoke();
+        }
+
+        if (philosopherT.justLeft() && dialogue.isShowing()) {
+            dialogue.hide();
+        }
 
 
 
@@ -64,21 +69,28 @@ public class GameScreen implements Screen {
 
         stage.act(delta);
         stage.draw();
+
+
     }
     @Override
 
     public void show() {
 
-        sprite = new Sprite(10, 8);
+        sprite = new Sprite(9, 14);
+
+        philosopherT = new NPC (Assets.tsprite, 10, 7);
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"),
+            new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas"))
+        );
 
-        grid.setTile(19,7, new Tile(Assets.gate, true));
+        dialogue = new Dialogue(skin);
+        stage.addActor(dialogue);
 
-        // this was generated with the help from AI; input actor under UI
+
         Actor worldInput = new Actor();
         worldInput.setBounds(0, 0, 20 * Grid.TILE_SIZE, 15 * Grid.TILE_SIZE);
         worldInput.setTouchable(Touchable.enabled);
@@ -100,7 +112,7 @@ public class GameScreen implements Screen {
         menuButton = new TextButton("|||", skin);
         menuButton.setSize(30, 20);
 
-        // remove padding
+        // remove button visuals
         menuButton.getStyle().up = null;
         menuButton.getStyle().over = null;
         menuButton.getStyle().down = null;
@@ -108,11 +120,11 @@ public class GameScreen implements Screen {
         inventoryWindow = new InventoryWindow("Inventory", skin);
         sideMenu = new SideMenu(skin, inventoryWindow);
 
-
+        // Ensure UI is touchable
         menuButton.setTouchable(Touchable.enabled);
         sideMenu.setTouchable(Touchable.enabled);
         inventoryWindow.setTouchable(Touchable.enabled);
-        inventoryWindow.setModal(true);         // prevent clicks passing through when open
+        inventoryWindow.setModal(true);         // prevent clicks passing through when open, so sprite an such wont move on board
         inventoryWindow.setVisible(false);
 
         stage.addActor(sideMenu);
@@ -126,7 +138,7 @@ public class GameScreen implements Screen {
             }
         });
 
-        // This was helped by the AI. Click outside inventory window to close it (but don't move the sprite)
+        // Click outside inventory window to close it
         stage.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -139,7 +151,7 @@ public class GameScreen implements Screen {
 
                     if (!clickedInsideInventory) {
                         inventoryWindow.setVisible(false);
-                        return true; // consume so it doesn't reach worldInput
+                        return true; // consume so it doesn't touch the board
                     }
                 }
                 return false;
@@ -168,7 +180,6 @@ public class GameScreen implements Screen {
         inventoryWindow.setTouchable(Touchable.enabled);
 
 
-// Close ONLY the side menu when clicking on empty stage space. Help with AI
 
         stage.addCaptureListener(new InputListener() {
             @Override
@@ -177,17 +188,17 @@ public class GameScreen implements Screen {
 
                 float sx = event.getStageX();
                 float sy = event.getStageY();
-                Actor hit = stage.hit(sx, sy, true);
+                Actor hit = stage.hit(sx, sy, true); // true => respect Touchable
 
                 boolean onSideMenu   = hit != null && hit.isDescendantOf(sideMenu);
                 boolean onMenuButton = hit != null && (hit == menuButton || hit.isDescendantOf(menuButton));
 
-                // If the click is not on the side menu or its button, it will close down
+                // If click is not on the side menu  close it
                 if (!onSideMenu && !onMenuButton) {
                     sideMenu.setVisible(false);
-                    return true; // consume so worldInput won't move the sprite
+                    return true; //  won't move the sprite
                 }
-                return false; // let UI handle its own clicks
+                return false;
             }
         });
 
@@ -200,8 +211,6 @@ public class GameScreen implements Screen {
 
 
     }
-
-
 
 
     @Override
@@ -220,14 +229,6 @@ public class GameScreen implements Screen {
     public void dispose() {
 
     }
-
-    private boolean isSpriteOnPortal() {
-
-        float sx = sprite.getX();
-        float sy = sprite.getY();
-        return sx == PORTAL_X && sy == PORTAL_Y;
-    }
-
 
 
 

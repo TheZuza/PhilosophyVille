@@ -13,13 +13,13 @@ public class SideMenu extends Window {
 
     public SideMenu(Skin skin, InventoryWindow inventoryWindow  ) {
 
-        //This must be fixed to the middle!
+
         super("Menu", skin);
 
         this.inventoryWindow = inventoryWindow;
 
         setSize(200, Gdx.graphics.getHeight());
-        //setPosition(Gdx.graphics.getWidth() - getWidth(), 0);
+
         setVisible(false);
 
         TextButton inventoryButton = new TextButton("Inventory", skin);

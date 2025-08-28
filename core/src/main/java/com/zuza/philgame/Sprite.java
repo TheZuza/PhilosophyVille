@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 
 public class Sprite {
@@ -17,13 +20,68 @@ public class Sprite {
     private float x;
     private float y;
 
+
+   // private float targetX; // target coordinates for movemkent
+   // private float targetY;
+    private float speed= 3f;  // move with 5 tiles per second
+
+    private Queue<Vector2> path = new LinkedList<>();
+    private Vector2 currentTarget = null;
+
     public Sprite(float startX, float startY) {
         this.x = startX;
         this.y = startY;
-        this.stateTime = 0f;
+        //this.stateTime = 0f;
+
+       // this.targetX = startX;
+       // this.targetY = startY;
 
         loadAnimations();
         currentState = SpriteState.RESTING;
+    }
+
+    public void moveTo(float tileX, float tileY) {
+
+        path.clear(); // clear the cue first
+
+        // tile movement
+        int startX = (int) x;
+        int startY = (int) y;
+        int endX = (int) tileX;
+        int endY = (int) tileY;
+
+        // Movement horizontally
+
+        int ax = (endX > startX) ? 1 : -1;
+        while (startX != endX){
+         startX += ax;
+         path.add(new Vector2(startX, startY));
+
+
+
+        }
+
+
+
+        int ay = (endY > startY) ? 1 : -1;
+        while (startY != endY){
+            startY += ay;
+            path.add(new Vector2(endX, startY));
+        }
+
+
+
+
+
+
+        if (!path.isEmpty()){
+            currentTarget= path.poll();
+        }
+
+
+
+
+
     }
 
 
@@ -62,13 +120,61 @@ public class Sprite {
     }
 
     public void update(float delta) {
-        stateTime += delta;
+        stateTime += delta; // for animation
+
+       if (currentTarget == null) {
+           return;
+       }
+
+
+        float dx = currentTarget.x - x;
+        float dy = currentTarget.y - y;
+
+        float distance =  (float) Math.sqrt(dx * dx + dy * dy);
+        float moveAmount = delta * speed;
+
+        if (distance <= moveAmount) {
+            x = currentTarget.x;
+            y = currentTarget.y;
+
+            if (!path.isEmpty()) {
+                currentTarget = path.poll();
+            } else {
+                currentTarget = null;
+            }
+        } else {
+            x += (dx / distance) * moveAmount;
+            y += (dy / distance) * moveAmount;
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
     }
 
     public void dispose() {
         for (Animation<TextureRegion> animation : animations.values()) {
 
         }
+    }
+
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
     }
 
 
