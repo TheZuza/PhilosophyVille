@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Core extends Game {
     protected SpriteBatch batch;
     private Texture image;
+    private final GameState state =  new GameState();
 
     @Override
     public void create() {
@@ -20,6 +21,8 @@ public class Core extends Game {
         Assets.finishLoading();
         setScreen(new GameScreen(this));
     }
+
+    public GameState state() {return state;}
 
 
 

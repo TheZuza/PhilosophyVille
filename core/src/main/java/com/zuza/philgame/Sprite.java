@@ -21,9 +21,8 @@ public class Sprite {
     private float y;
 
 
-   // private float targetX; // target coordinates for movemkent
-   // private float targetY;
-    private float speed= 3f;  // move with 5 tiles per second
+
+    private float speed= 3f;
 
     private Queue<Vector2> path = new LinkedList<>();
     private Vector2 currentTarget = null;
@@ -31,10 +30,7 @@ public class Sprite {
     public Sprite(float startX, float startY) {
         this.x = startX;
         this.y = startY;
-        //this.stateTime = 0f;
 
-       // this.targetX = startX;
-       // this.targetY = startY;
 
         loadAnimations();
         currentState = SpriteState.RESTING;
@@ -50,7 +46,7 @@ public class Sprite {
         int endX = (int) tileX;
         int endY = (int) tileY;
 
-        // Movement horizontally
+        // Movement horizontally, helped with AI
 
         int ax = (endX > startX) ? 1 : -1;
         while (startX != endX){
@@ -115,7 +111,7 @@ public class Sprite {
     public void render(SpriteBatch batch) {
         Animation<TextureRegion> animation = animations.get(currentState);
         TextureRegion currentFrame = animation.getKeyFrame(stateTime, true);
-       // batch.draw(currentFrame, x, y);
+
         batch.draw(currentFrame, x * Grid.TILE_SIZE, y * Grid.TILE_SIZE, Grid.TILE_SIZE, Grid.TILE_SIZE);
     }
 

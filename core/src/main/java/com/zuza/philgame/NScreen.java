@@ -29,8 +29,8 @@ public class NScreen implements Screen {
     private NPC philosopher;
 
 
-    private static final int PORTAL_X = 9;   // middle-left column (0..19)
-    private static final int PORTAL_Y = 0;   // middle row (0..14)
+    private static final int PORTAL_X = 9;
+    private static final int PORTAL_Y = 0;
     private boolean transitioning = false;
 
     private Dialogue dialogue;
@@ -53,6 +53,7 @@ public class NScreen implements Screen {
 
         if(!transitioning && isSpriteOnPortal()) {
             transitioning = true;
+
             game.setScreen(new TScreen(game));
         }
 
@@ -62,13 +63,11 @@ public class NScreen implements Screen {
 
         philosopher.update(playerTileX, playerTileY);
 
-        //if(philosopher.justEntered() && !saidIt) {
-          //  dialogue.show(philosopherLesson);
-            //saidIt = true;
-        //}
+
 
         if (philosopher.justEntered() && philosopher.cooldownReady()) {
             dialogue.show(philosopherLesson);
+            game.state().addPoints(50);
             philosopher.markSpoke();
         }
 
@@ -112,6 +111,10 @@ public class NScreen implements Screen {
             new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas"))
             );
 
+        Hud hud = new Hud(skin, game.state());
+        stage.addActor(hud);
+
+
         dialogue = new Dialogue(skin);
         stage.addActor(dialogue);
 
@@ -139,11 +142,11 @@ public class NScreen implements Screen {
         });
         stage.addActor(worldInput);
 
-        //
+
         menuButton = new TextButton("||||", skin);
         menuButton.setSize(30, 20);
 
-        // remove button padding
+
         menuButton.getStyle().up = null;
         menuButton.getStyle().over = null;
         menuButton.getStyle().down = null;
@@ -151,7 +154,7 @@ public class NScreen implements Screen {
         inventoryWindow = new InventoryWindow("Inventory", skin);
         sideMenu = new SideMenu(skin, inventoryWindow);
 
-        // Ensure UI is touchable
+
         menuButton.setTouchable(Touchable.enabled);
         sideMenu.setTouchable(Touchable.enabled);
         inventoryWindow.setTouchable(Touchable.enabled);
@@ -191,7 +194,7 @@ public class NScreen implements Screen {
 
         stage.addActor(menuButton);
 
-        // Layout
+
         Table menuButtonTable = new Table();
         menuButtonTable.setFillParent(true);
         stage.addActor(menuButtonTable);

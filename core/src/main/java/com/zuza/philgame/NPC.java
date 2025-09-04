@@ -39,11 +39,11 @@ public class NPC {
 
 
         boolean wasNear = this.canTalk;
-
+        // Help from AI to detect player npc distance
         int dx = Math.abs(playerTileX - tileX);
         int dy = Math.abs(playerTileY - tileY);
 
-        // Help with AI
+        // Help from AI
         // 3x3 surrounding tiles = Chebyshev distance <= 1, excluding center
         boolean nowNear= (Math.max(dx, dy) <= 1) && !(dx == 0 && dy == 0);
 
@@ -80,10 +80,10 @@ public class NPC {
     public boolean justEntered()   { return justEntered; }
     public boolean justLeft()      { return justLeft; }
 
-    //From Ai, for break between dialogue
+    //Help from Ai, for break between dialogue
     public boolean cooldownReady() { return lastSpokeAtMs < 0 || (TimeUtils.millis() - lastSpokeAtMs) >= speakCooldownMs; }
     public void markSpoke()        { lastSpokeAtMs = TimeUtils.millis(); }
-   // public void setCooldownMs(long ms) { speakCooldownMs = ms; }
+
 
 
 

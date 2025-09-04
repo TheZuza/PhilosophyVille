@@ -56,6 +56,7 @@ public class TScreen implements Screen {
 
         if (philosopherT.justEntered() && philosopherT.cooldownReady()) {
             dialogue.show(philosopherTLesson);
+            game.state().addPoints(50);
             philosopherT.markSpoke();
         }
 
@@ -86,6 +87,9 @@ public class TScreen implements Screen {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"),
             new TextureAtlas(Gdx.files.internal("ui/uiskin.atlas"))
         );
+
+        Hud hud = new Hud(skin, game.state());
+        stage.addActor(hud);
 
         dialogue = new Dialogue(skin);
         stage.addActor(dialogue);
@@ -124,7 +128,7 @@ public class TScreen implements Screen {
         menuButton.setTouchable(Touchable.enabled);
         sideMenu.setTouchable(Touchable.enabled);
         inventoryWindow.setTouchable(Touchable.enabled);
-        inventoryWindow.setModal(true);         // prevent clicks passing through when open, so sprite an such wont move on board
+        inventoryWindow.setModal(true);
         inventoryWindow.setVisible(false);
 
         stage.addActor(sideMenu);
@@ -188,7 +192,7 @@ public class TScreen implements Screen {
 
                 float sx = event.getStageX();
                 float sy = event.getStageY();
-                Actor hit = stage.hit(sx, sy, true); // true => respect Touchable
+                Actor hit = stage.hit(sx, sy, true); // true so respect Touchable
 
                 boolean onSideMenu   = hit != null && hit.isDescendantOf(sideMenu);
                 boolean onMenuButton = hit != null && (hit == menuButton || hit.isDescendantOf(menuButton));

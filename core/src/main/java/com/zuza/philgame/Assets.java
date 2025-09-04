@@ -17,6 +17,7 @@ public class Assets {
     public static Texture gate;
     public static Texture nsprite;
     public static Texture tsprite;
+    public static Texture tree1;
 
     private static final String UI_ATLAS_PATH = "ui/uiskin.atlas";
     private static final String UI_SKIN_PATH  = "ui/uiskin.json";
@@ -33,6 +34,7 @@ public class Assets {
         assetManager.load("gate.png", Texture.class);
         assetManager.load("nnpc1.png", Texture.class);
         assetManager.load("TimeSprite.png", Texture.class);
+        assetManager.load("tree1.png", Texture.class);
 
 
         // AI suggestion to fix dialogue box, but it seems not to have an effect
@@ -55,6 +57,7 @@ public class Assets {
         gate = assetManager.get("gate.png", Texture.class);
         nsprite = assetManager.get("nnpc1.png", Texture.class);
         tsprite = assetManager.get("TimeSprite.png", Texture.class);
+        tree1 = assetManager.get("tree1.png", Texture.class);
 
     }
 

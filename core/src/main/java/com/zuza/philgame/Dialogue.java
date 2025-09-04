@@ -27,7 +27,7 @@ public class Dialogue extends Table {
         text.setWrap(true);
         window.add(text).grow().width(600f);
 
-        add().expand().row();                   // push to bottom
+        add().expand().row();
         add(window).expandX().bottom().pad(16f);
 
         window.setVisible(false);
