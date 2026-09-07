@@ -1,36 +1,59 @@
-# PhilGame
+# PhilosophyVille
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+PhilosophyVille is a 2D game developed in Java using the LibGDX framework. The project explores philosophical ideas through an interactive game environment where the player can explore, interact with characters, and engage with dialogue.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+The project was developed as part of my MSc in Software Development and gave me practical experience designing and implementing a larger Java application.
 
-## Platforms
+## Features
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
-- `html`: Web platform using GWT and WebGL. Supports only Java projects.
+* 2D player movement and exploration
+* Animated player and NPC sprites
+* NPC interaction and dialogue system
+* Inventory system
+* In-game menu and user interface
+* Multiple game screens and game-state management
 
-## Gradle
+## Technologies
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+* Java
+* LibGDX
+* Gradle
+* LWJGL3
+* Git
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `html:dist`: compiles GWT sources. The compiled application can be found at `html/build/dist`: you can use any HTTP server to deploy it.
-- `html:superDev`: compiles GWT sources and runs the application in SuperDev mode. It will be available at [localhost:8080/html](http://localhost:8080/html). Use only during development.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+## Project Structure
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+The application is separated into multiple modules:
+
+* `core` — main game logic, including gameplay, NPCs, dialogue, inventory and UI
+* `lwjgl3` — desktop launcher
+* `assets` — sprites, UI assets and other game resources
+
+## Running the Game
+
+### Requirements
+
+* Java
+* Git
+
+Clone the repository:
+
+```bash
+git clone https://github.com/TheZuza/PhilosophyVille.git
+cd PhilosophyVille
+```
+
+Run the desktop version using the Gradle wrapper:
+
+```bash
+./gradlew lwjgl3:run
+```
+
+## What I Learned
+
+Building PhilosophyVille gave me practical experience applying object-oriented programming concepts in Java to a larger project.
+
+I worked with game states, user input, sprite animation, NPC behaviour, dialogue, inventory management and UI components while organising the application across multiple Java classes.
+
+The project also gave me experience using Git for version control and Gradle for dependency management and builds.
+
